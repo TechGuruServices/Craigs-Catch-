@@ -1,32 +1,32 @@
-import { pgTable, text, serial, timestamp, boolean, integer } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const monitors = pgTable("monitors", {
-  id: serial("id").primaryKey(),
+export const monitors = sqliteTable("monitors", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   url: text("url").notNull(),
-  active: boolean("active").default(true).notNull(),
-  lastChecked: timestamp("last_checked"),
+  active: integer("active", { mode: "boolean" }).default(true).notNull(),
+  lastChecked: text("last_checked"),
 });
 
-export const messages = pgTable("messages", {
-  id: serial("id").primaryKey(),
+export const messages = sqliteTable("messages", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   role: text("role", { enum: ["user", "assistant"] }).notNull(),
   content: text("content").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
 });
 
-export const items = pgTable("items", {
-  id: serial("id").primaryKey(),
+export const items = sqliteTable("items", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   monitorId: integer("monitor_id").notNull(),
   title: text("title").notNull(),
   link: text("link").notNull(),
   description: text("description"),
-  postedAt: timestamp("posted_at"),
+  postedAt: text("posted_at"),
   guid: text("guid").notNull().unique(), // The RSS item guid to prevent duplicates
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
 });
 
 export const monitorsRelations = relations(monitors, ({ many }) => ({

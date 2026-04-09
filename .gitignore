@@ -30,3 +30,6 @@ vite.config.ts.*
 
 # Misc
 .agents/
+
+# Local database file
+local.db

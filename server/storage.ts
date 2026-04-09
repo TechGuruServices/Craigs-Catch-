@@ -1,17 +1,17 @@
-import { db } from "./db";
 import {
-  monitors,
-  items,
-  messages,
-  type Monitor,
-  type InsertMonitor,
-  type Item,
-  type InsertItem,
-  type UpdateMonitorRequest,
-  type Message,
-  type InsertMessage,
+    items,
+    messages,
+    monitors,
+    type InsertItem,
+    type InsertMessage,
+    type InsertMonitor,
+    type Item,
+    type Message,
+    type Monitor,
+    type UpdateMonitorRequest,
 } from "@shared/schema";
-import { eq, desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
+import { db } from "./db";
 
 export interface IStorage {
   // Monitors
@@ -20,7 +20,7 @@ export interface IStorage {
   createMonitor(monitor: InsertMonitor): Promise<Monitor>;
   updateMonitor(id: number, monitor: UpdateMonitorRequest): Promise<Monitor | undefined>;
   deleteMonitor(id: number): Promise<void>;
-  
+
   // Items
   getItems(monitorId?: number): Promise<Item[]>;
   createItem(item: InsertItem): Promise<Item>;
@@ -49,9 +49,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateMonitor(id: number, updates: UpdateMonitorRequest): Promise<Monitor | undefined> {
+    // Convert Date to ISO string if present
+    const processedUpdates: any = { ...updates };
+    if (updates.lastChecked instanceof Date) {
+      processedUpdates.lastChecked = updates.lastChecked.toISOString();
+    }
     const [monitor] = await db
       .update(monitors)
-      .set(updates)
+      .set(processedUpdates)
       .where(eq(monitors.id, id))
       .returning();
     return monitor;

@@ -1,8 +1,8 @@
+import { api } from "@shared/routes";
 import type { Express, Request, Response } from "express";
 import type { Server } from "http";
-import { storage } from "./storage";
-import { api } from "@shared/routes";
 import { z } from "zod";
+import { storage } from "./storage";
 
 /**
  * Fetch HTML search results using fetch() with browser-like headers,
@@ -236,9 +236,9 @@ export async function registerRoutes(
     const chatId = process.env.TELEGRAM_CHAT_ID;
 
     if (!botToken || !chatId) {
-      return res.status(400).json({ 
-        ok: false, 
-        message: "TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is not set in your .env file." 
+      return res.status(400).json({
+        ok: false,
+        message: "TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is not set in your .env file."
       });
     }
 
@@ -316,7 +316,7 @@ async function checkFeeds() {
             title: item.title || "No Title",
             link: item.link || "",
             description: item.contentSnippet || item.content || "",
-            postedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
+            postedAt: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
             guid: guid,
           });
           newItemsCount++;

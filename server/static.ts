@@ -3,13 +3,19 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+declare const __dirname: string | undefined;
+
+function getCurrentDir() {
+  if (typeof __dirname === "string") {
+    return __dirname;
+  }
+
+  const metaUrl = new Function("return import.meta.url")();
+  return path.dirname(fileURLToPath(metaUrl));
+}
+
 export function serveStatic(app: Express) {
-  // import.meta.url works in ESM (tsx dev) AND in esbuild's CJS output —
-  // esbuild automatically shims it to: require('url').pathToFileURL(__filename).href
-  const distPath = path.resolve(
-    path.dirname(fileURLToPath(import.meta.url)),
-    "public"
-  );
+  const distPath = path.resolve(getCurrentDir(), "public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(

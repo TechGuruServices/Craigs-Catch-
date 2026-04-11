@@ -12,32 +12,32 @@
     /* Base theme: Premium Light (Off-white canvas) */
     --background: 210 40% 98%;
     --foreground: 222 47% 11%;
-    
+
     /* Primary: Electric Teal */
     --primary: 173 80% 40%;
     --primary-foreground: 0 0% 100%;
-    
+
     /* Secondary: Clean Gray for subtle actions */
     --secondary: 210 20% 92%;
     --secondary-foreground: 222 47% 11%;
-    
+
     --muted: 210 20% 92%;
     --muted-foreground: 215 16% 47%;
-    
+
     /* Accent: A vibrant sky blue gradient stop */
     --accent: 199 89% 48%;
     --accent-foreground: 0 0% 100%;
-    
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    
+
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 173 80% 40%;
 
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
@@ -64,23 +64,23 @@
     /* Base theme: Deep sleek Charcoal / OLED Black */
     --background: 240 10% 4%;
     --foreground: 0 0% 98%;
-    
+
     /* Primary: Electric Teal Glow */
     --primary: 173 80% 45%;
     --primary-foreground: 240 10% 4%;
-    
+
     --secondary: 240 6% 12%;
     --secondary-foreground: 0 0% 98%;
-    
+
     --muted: 240 6% 12%;
     --muted-foreground: 240 5% 65%;
-    
+
     --accent: 199 89% 55%;
     --accent-foreground: 0 0% 98%;
-    
+
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    
+
     /* Ultra-thin low-opacity borders */
     --border: 240 6% 15%;
     --input: 240 6% 15%;
@@ -88,7 +88,7 @@
 
     --card: 240 8% 6%;
     --card-foreground: 0 0% 98%;
-    
+
     --popover: 240 8% 6%;
     --popover-foreground: 0 0% 98%;
 
@@ -110,6 +110,13 @@
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/30 selection:text-primary;
     font-family: var(--font-sans);
+    min-height: 100vh;
+    background-image: radial-gradient(circle at 12% 12%, rgba(20, 184, 166, 0.22), transparent 20%),
+      radial-gradient(circle at 92% 12%, rgba(59, 130, 246, 0.16), transparent 20%),
+      radial-gradient(circle at 50% 82%, rgba(96, 165, 250, 0.12), transparent 26%),
+      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 100%);
+    background-attachment: fixed;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -120,21 +127,47 @@
 
 @layer utilities {
   .glass-panel {
-    @apply bg-background/60 backdrop-blur-2xl border border-white/5 shadow-2xl shadow-black/20;
+    @apply bg-background/55 backdrop-blur-3xl border border-white/10 shadow-[0_35px_120px_-40px_rgba(0,0,0,0.45)];
+    box-shadow: 0 30px 80px -32px rgba(0,0,0,0.45);
   }
-  
+
   .glass-card {
-    @apply bg-card/80 backdrop-blur-md border border-white/5 shadow-xl shadow-black/10;
+    @apply bg-card/70 backdrop-blur-xl border border-white/10 shadow-[0_24px_90px_-40px_rgba(0,0,0,0.35)];
+  }
+
+  .glass-deep {
+    @apply bg-card/55 backdrop-blur-[28px] border border-white/10 shadow-[0_40px_120px_-55px_rgba(0,0,0,0.5)];
   }
 
   .hover-elevate {
     @apply transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/30;
   }
-  
+
   .active-elevate-2 {
     @apply active:translate-y-0 active:shadow-sm transition-all duration-150;
   }
-  
+
+  .text-glow {
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+  }
+
+  .text-glow-soft {
+    text-shadow: 0 0 12px hsl(var(--primary) / 0.35);
+  }
+
+  .animate-gradient {
+    background-size: 200% auto;
+    animation: gradient-shift 4s ease-in-out infinite;
+  }
+}
+  .hover-elevate {
+    @apply transition-all duration-500 ease-out hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/30;
+  }
+
+  .active-elevate-2 {
+    @apply active:translate-y-0 active:shadow-sm transition-all duration-150;
+  }
+
   .text-glow {
     text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
   }

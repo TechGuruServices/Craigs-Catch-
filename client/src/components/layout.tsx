@@ -30,18 +30,7 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="relative flex flex-col min-h-screen min-h-dvh w-full bg-background overflow-hidden">
 
-      {/* ── Ambient background art (fixed, non-interactive) ── */}
-      <div
-        className="pointer-events-none fixed inset-0 z-0"
-        aria-hidden="true"
-        style={{
-          background: [
-            "radial-gradient(ellipse 80% 50% at 5%   0%,   rgba(59,130,246,0.14) 0%, transparent 60%)",
-            "radial-gradient(ellipse 60% 50% at 95%  100%, rgba(139,92,246,0.12) 0%, transparent 60%)",
-            "radial-gradient(ellipse 50% 35% at 50%  110%, rgba(59,130,246,0.06) 0%, transparent 50%)",
-          ].join(", "),
-        }}
-      />
+
 
       {/* ================================================================
           HEADER — fixed, glassmorphic
@@ -67,8 +56,7 @@ export function Layout({ children }: LayoutProps) {
               className="text-[17px] leading-none font-display font-bold
                          bg-clip-text text-transparent
                          bg-gradient-to-r from-blue-400 via-violet-400 to-blue-400
-                         bg-[length:200%_auto]"
-              style={{ animation: "gradient-shift 5s ease-in-out infinite" }}
+                         bg-[length:200%_auto] animate-[gradient-shift_5s_ease-in-out_infinite]"
             >
               Craigs-Catch
             </h1>
@@ -84,8 +72,7 @@ export function Layout({ children }: LayoutProps) {
           <div className="badge-live">
             <span className="relative flex h-1.5 w-1.5">
               <span
-                className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
-                style={{ animation: "ping-dot 1.4s cubic-bezier(0,0,0.2,1) infinite" }}
+                className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-[ping-dot_1.4s_cubic-bezier(0,0,0.2,1)_infinite]"
               />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400" />
             </span>

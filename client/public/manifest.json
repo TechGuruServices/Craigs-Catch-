@@ -27,6 +27,9 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["utilities", "shopping"],
+  "categories": [
+    "utilities",
+    "shopping"
+  ],
   "screenshots": []
 }

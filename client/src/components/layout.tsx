@@ -106,18 +106,18 @@ export function Layout({ children }: LayoutProps) {
                 <Settings className="w-4 h-4 text-slate-400" strokeWidth={1.75} />
               </button>
             </DialogTrigger>
-            
+
             {/* Settings Dialog Modal */}
             <DialogContent className="sm:max-w-[400px] glass-panel border-white/[0.08] bg-[#0a0f1e]/95 text-foreground sm:rounded-[24px]">
               <DialogHeader>
                 <DialogTitle className="text-xl font-display font-bold">App Settings</DialogTitle>
               </DialogHeader>
               <div className="flex flex-col gap-6 py-4">
-                
+
                 {/* Configuration Group */}
                 <div className="space-y-4">
                   <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Preferences</h4>
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-[10px] bg-blue-500/10 flex items-center justify-center border border-blue-500/20">

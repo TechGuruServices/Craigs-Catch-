@@ -1,0 +1,16 @@
+name = "craigs-catch"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "./client/dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "craigs-catch-db"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+[triggers]
+crons = ["*/10 * * * *"]
+
+[vars]
+CHECK_INTERVAL_MINUTES = "10"
+NODE_ENV = "production"

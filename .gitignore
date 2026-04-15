@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+client/dist/
 
 # Environment variables (contains secrets) - DO NOT commit real .env
 .env

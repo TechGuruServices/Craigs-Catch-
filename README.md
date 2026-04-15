@@ -44,12 +44,15 @@ Featuring a **Dark Mode Luxury** aesthetic inspired by modern design leaders lik
 ## 🚦 Getting Started
 
 ### 1. Prerequisites
+
 - [Node.js](https://nodejs.org/) (v18.x or higher)
 - [Git](https://git-scm.com/)
 - A [Telegram Bot](https://t.me/BotFather) token (for alerts)
 
 ### 2. Installation
+
 Clone the repository and install dependencies:
+
 ```bash
 git clone https://github.com/TechGuruServices/daylume-main.git
 cd Craigs-Catch
@@ -57,17 +60,23 @@ npm install
 ```
 
 ### 3. Database Initialization
+
 Prepare your local SQLite database using Drizzle:
+
 ```bash
 npm run db:push
 ```
 
 ### 4. Configuration
+
 Create a `.env` file in the root directory:
+
 ```bash
 cp .env.example .env
 ```
+
 Fill in your credentials:
+
 ```env
 DATABASE_URL=./local.db
 TELEGRAM_BOT_TOKEN=8620985452:AAErFPtvEszY21A9-3jO7cdExWY3PyrjT6c
@@ -77,22 +86,28 @@ PORT=5000
 ```
 
 ### 5. Launch the System
+
 Start the development server:
+
 ```bash
 npm run dev
 ```
+
 Access the dashboard at `http://localhost:5000`.
 
 ---
 
 ## 🤖 AI Setup (Optional)
+
 Craigs-Catch supports local AI via **Ollama** or cloud AI via **Together API**.
+
 1. To use local AI, install [Ollama](https://ollama.com/) and run `ollama pull qwen`.
 2. Update your `.env` with `LLM_PROVIDER=ollama` or `LLM_PROVIDER=together`.
 
 ---
 
 ## 📱 Mobile Installation (PWA)
+
 1. Open the dashboard on your mobile browser.
 2. Select **"Add to Home Screen"** from your browser settings.
 3. Enjoy a full-screen, standalone native app experience with custom branded icons.
@@ -100,7 +115,9 @@ Craigs-Catch supports local AI via **Ollama** or cloud AI via **Together API**.
 ---
 
 ## 🤝 Contributing
+
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
@@ -108,6 +125,7 @@ Contributions are what make the open-source community such an amazing place to l
 5. Open a Pull Request
 
 ## 📄 License
+
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ---

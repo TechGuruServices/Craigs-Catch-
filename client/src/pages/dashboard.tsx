@@ -167,7 +167,11 @@ export default function Dashboard() {
                         <Button
                           variant="ghost"
                           size="icon"
+                          onClick={(e) => handleDelete(item.id, e)}
                           className="text-muted-foreground hover:text-destructive hover:bg-destructive/15 -mr-2 z-20 relative rounded-xl hover:shadow-[0_0_15px_rgba(239,68,68,0.2)] hover-lift active-press"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </div>
                     </Card>
                   </a>

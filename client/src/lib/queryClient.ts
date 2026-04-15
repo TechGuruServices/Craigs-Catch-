@@ -39,7 +39,7 @@ export const getQueryFn: <T>(options: {
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null as T;
+      return null as unknown;
     }
 
     await throwIfResNotOk(res);
@@ -50,7 +50,7 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
-      refetchInterval: false,
+      refetchInterval: 30000, // Refresh data every 30 seconds
       refetchOnWindowFocus: false,
       staleTime: Infinity,
       retry: false,

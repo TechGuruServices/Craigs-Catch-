@@ -2,7 +2,8 @@
   "include": [
     "client/src/**/*",
     "shared/**/*",
-    "server/**/*"
+    "server/**/*",
+    "functions/**/*"
   ],
   "exclude": [
     "node_modules",
@@ -31,7 +32,8 @@
     "ignoreDeprecations": "5.0",
     "types": [
       "node",
-      "vite/client"
+      "vite/client",
+      "@cloudflare/workers-types"
     ],
     "paths": {
       "@/*": [

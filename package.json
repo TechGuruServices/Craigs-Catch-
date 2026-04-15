@@ -44,6 +44,7 @@
     "zod-validation-error": "^3.4.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260415.1",
     "@tailwindcss/typography": "^0.5.15",
     "@types/better-sqlite3": "^7.6.13",
     "@types/cors": "^2.8.19",

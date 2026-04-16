@@ -48,13 +48,19 @@ A self-hosted web app (PWA) that monitors Craigslist search results for free ite
    - `OLLAMA_URL` and `OLLAMA_MODEL` if using AI chat
    - `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` if using alerts
 
-5. **Start the app**
+5. **Push the database schema**
+
+   ```bash
+   npm run db:push
+   ```
+
+6. **Start the app**
 
    ```bash
    npm run dev
    ```
 
-6. **Open the app**
+7. **Open the app**
    - [http://localhost:5000](http://localhost:5000)
 
 ---

@@ -311,6 +311,29 @@ async function checkFeeds() {
         // Check if item already exists
         const existingItem = await storage.getItemByGuid(guid);
         if (!existingItem) {
+          let images: string[] = [];
+          
+          try {
+            // Fetch listing page to extract images
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+            
+            const adRes = await fetch(item.link, {
+              headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36' },
+              signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            
+            if (adRes.ok) {
+              const adHtml = await adRes.text();
+              const allImages = Array.from(adHtml.matchAll(/https:\/\/images\.craigslist\.org\/[^"']+/gi)).map(m => m[0]);
+              // Deduplicate and favor 600x450 resolution
+              images = Array.from(new Set(allImages.filter(url => url.includes('600x450'))));
+            }
+          } catch (e) {
+            console.error(`[scraper] Failed to fetch images for ${item.link}:`, e);
+          }
+
           const newItem = await storage.createItem({
             monitorId: monitor.id,
             title: item.title || "No Title",
@@ -321,9 +344,9 @@ async function checkFeeds() {
           });
           newItemsCount++;
 
-          await sendTelegramAlert(newItem.title, newItem.link, monitor.name);
+          await sendTelegramAlert(newItem.title, newItem.link, monitor.name, images);
           // Throttle between messages to respect Telegram API rate limits
-          await new Promise(r => setTimeout(r, 250));
+          await new Promise(r => setTimeout(r, 1000));
         }
       }
 
@@ -337,7 +360,7 @@ async function checkFeeds() {
   }
 }
 
-async function sendTelegramAlert(title: string, link: string, monitorName: string) {
+async function sendTelegramAlert(title: string, link: string, monitorName: string, images: string[] = []) {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
@@ -349,6 +372,26 @@ async function sendTelegramAlert(title: string, link: string, monitorName: strin
 
   const text = `🚨 <b>New Item Found!</b> 🚨\n\n<b>${safeTitle}</b>\n\n<a href="${link}">View on Craigslist</a>\n<i>Monitor: ${safeMonitorName}</i>`;
 
+  // Try to use sendMediaGroup if there are images, otherwise fallback to sendMessage
+  const useMediaGroup = images.length > 0;
+  const apiEndpoint = useMediaGroup ? "sendMediaGroup" : "sendMessage";
+  
+  let body: any = {
+    chat_id: chatId,
+  };
+
+  if (useMediaGroup) {
+    body.media = images.slice(0, 10).map((url, i) => ({
+      type: "photo",
+      media: url,
+      caption: i === 0 ? text : undefined,
+      parse_mode: i === 0 ? "HTML" : undefined
+    }));
+  } else {
+    body.text = text;
+    body.parse_mode = "HTML";
+  }
+
   const maxRetries = 3;
   const startTime = Date.now();
 
@@ -357,15 +400,11 @@ async function sendTelegramAlert(title: string, link: string, monitorName: strin
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
-      const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      const response = await fetch(`https://api.telegram.org/bot${botToken}/${apiEndpoint}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: controller.signal,
-        body: JSON.stringify({
-          chat_id: chatId,
-          text,
-          parse_mode: "HTML",
-        }),
+        body: JSON.stringify(body),
       });
 
       clearTimeout(timeout);
@@ -378,8 +417,8 @@ async function sendTelegramAlert(title: string, link: string, monitorName: strin
 
       // Handle rate limiting (HTTP 429)
       if (response.status === 429) {
-        const body = await response.json() as { parameters?: { retry_after?: number } };
-        const retryAfter = body?.parameters?.retry_after || 5;
+        const respBody = await response.json() as { parameters?: { retry_after?: number } };
+        const retryAfter = respBody?.parameters?.retry_after || 5;
         console.warn(`[telegram] ⏳ Rate limited. Retrying in ${retryAfter}s (attempt ${attempt}/${maxRetries})`);
         await new Promise(r => setTimeout(r, retryAfter * 1000));
         continue;
@@ -387,8 +426,15 @@ async function sendTelegramAlert(title: string, link: string, monitorName: strin
 
       // Non-retryable API error
       const errText = await response.text();
+      // If we failed with sendMediaGroup (e.g. invalid img URL), fallback to plain text on next attempt
+      if (useMediaGroup && attempt === 1 && !errText.includes("429")) {
+        console.warn(`[telegram] ⚠️ MediaGroup failed: ${errText}. Falling back to plain text.`);
+        body = { chat_id: chatId, text, parse_mode: "HTML" };
+        continue;
+      }
+
       console.error(`[telegram] ❌ API error ${response.status}: ${errText}`);
-      return;
+      if (!useMediaGroup || attempt === maxRetries) return;
 
     } catch (err: any) {
       const isAbort = err.name === "AbortError";

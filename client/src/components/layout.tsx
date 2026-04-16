@@ -1,65 +1,105 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ReactNode } from "react";
-import { AppSidebar } from "./app-sidebar";
+import { Link, useLocation } from "wouter";
+import { LayoutDashboard, Target, MessageSquare, Activity } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
-  const style = {
-    "--sidebar-width": "18rem",
-    "--sidebar-width-icon": "4rem",
-  } as React.CSSProperties;
+  const [location] = useLocation();
+
+  const navItems = [
+    { href: "/", label: "Feed", icon: LayoutDashboard },
+    { href: "/monitors", label: "Monitors", icon: Target },
+    { href: "/chat", label: "AI Intel", icon: MessageSquare },
+  ];
 
   return (
-    <SidebarProvider style={style}>
-      <div className="relative flex min-h-screen w-full overflow-hidden">
-        {/* Premium Background Layers */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_85%,rgba(120,119,198,0.08),transparent_35%),radial-gradient(circle_at_85%_15%,rgba(255,255,255,0.05),transparent_35%),radial-gradient(circle_at_45%_45%,rgba(120,119,198,0.06),transparent_40%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.02),rgba(0,0,0,0.01))]" />
+    <div className="relative min-h-screen w-full bg-background text-foreground overflow-hidden font-sans selection:bg-primary/30 dark">
+      {/* Deep Space Background Effects - Raycast/Linear Inspired */}
+      <div className="fixed inset-0 pointer-events-none w-full h-full">
+        {/* Subtle noise texture */}
+        <div className="absolute inset-0 opacity-[0.015] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
+        
+        {/* Deep ambient glow from bottom right */}
+        <div className="absolute -bottom-1/2 -right-[20%] w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] rounded-full bg-primary/20 blur-[120px] mix-blend-screen animate-pulse-glow pointer-events-none" />
+        
+        {/* Subtle mesh top left */}
+        <div className="absolute -top-[10%] -left-[10%] w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] rounded-full bg-violet-500/10 blur-[100px] mix-blend-screen pointer-events-none" />
+      </div>
 
-        <AppSidebar />
-
-        <div className="flex flex-col flex-1 min-w-0 relative z-0">
-          {/* Premium Header */}
-          <header className="flex h-20 items-center justify-between px-8 border-b border-white/10 glass-ultra sticky top-0 z-50">
-            <div className="flex items-center gap-6">
-              <SidebarTrigger className="hover-lift active-press w-12 h-12 glass-card-premium text-foreground/80 hover:text-primary transition-all rounded-2xl shadow-lg hover:shadow-primary/20 flex items-center justify-center" />
-              <div className="space-y-1">
-                <h1 className="text-3xl font-bold tracking-tight text-gradient-sapphire animate-gradient-flow bg-200%">
-                  CraigsCatch
-                </h1>
-                <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground/70 font-medium">
-                  Premium Scanner • Always Active
-                </p>
-              </div>
+      <div className="flex flex-col h-screen relative z-10">
+        {/* Sleek MacOS-like Top Bar */}
+        <header className="flex-none h-14 w-full flex items-center justify-between px-6 z-50 glass-ultra border-b border-white/5 sticky top-0">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-primary to-accent shadow-[0_0_15px_hsl(var(--primary)/40%)] flex items-center justify-center border border-white/20">
+              <Activity className="w-3.5 h-3.5 text-white" />
             </div>
+            <span className="font-semibold tracking-wide text-[15px] font-display text-white/90">
+              CraigsCatch<span className="text-primary ml-0.5">.</span>
+            </span>
+          </div>
 
-            {/* Premium Status Indicator */}
-            <div className="flex items-center gap-4">
-              <div className="inline-flex items-center gap-3 glass-card-premium px-5 py-3 text-sm text-foreground/90 shadow-sm">
-                <div className="relative">
-                  <div className="w-3 h-3 rounded-full bg-primary animate-pulse-glow shadow-[0_0_12px_hsl(var(--primary)/0.6)]" />
-                  <div className="absolute inset-0 w-3 h-3 rounded-full bg-primary animate-ping opacity-75" />
-                </div>
-                <span className="font-medium text-gradient-primary">Live Feed Active</span>
-              </div>
+          <div className="flex items-center gap-3">
+            {/* Live Indicator */}
+            <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/5 border border-white/5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-[11px] font-medium tracking-wider text-white/60 uppercase">System Active</span>
             </div>
-          </header>
+          </div>
+        </header>
 
-          {/* Premium Main Content */}
-          <main className="relative flex-1 overflow-auto scrollbar-premium px-6 py-8 md:px-10 md:py-12">
-            {/* Ambient Background Effects */}
-            <div className="absolute inset-x-0 top-0 h-96 bg-[radial-gradient(circle_at_top,rgba(120,119,198,0.04),transparent_70%)] pointer-events-none -z-10" />
-            <div className="absolute inset-x-0 bottom-0 h-96 bg-[radial-gradient(circle_at_bottom,rgba(120,119,198,0.03),transparent_70%)] pointer-events-none -z-10" />
+        {/* Dynamic Scrollable Content */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto w-full mx-auto max-w-[1400px] scrollbar-premium relative z-0">
+           <div className="p-4 sm:p-8 md:p-10 pb-32 sm:pb-32">
+             {children}
+           </div>
+        </main>
 
-            <div className="max-w-7xl mx-auto h-full relative">
-              {children}
-            </div>
-          </main>
+        {/* Minimalist Floating Dock (Mobile-First / Desktop Centered) */}
+        <div className="fixed bottom-6 inset-x-0 w-full flex justify-center z-50 pointer-events-none px-4">
+          <nav className="pointer-events-auto flex items-center gap-1 sm:gap-2 p-1.5 rounded-2xl glass-card-premium border border-white/10 shadow-[0_20px_40px_-5px_rgba(0,0,0,0.5),0_0_15px_rgba(255,255,255,0.05)] backdrop-blur-3xl overflow-hidden relative">
+            <div className="absolute inset-0 pointer-events-none rounded-2xl ring-1 ring-inset ring-white/5" />
+            
+            {navItems.map((item) => {
+              const isActive = location === item.href;
+              const Icon = item.icon;
+              
+              return (
+                <Link key={item.href} href={item.href}>
+                  <a className={cn(
+                    "relative flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl transition-all duration-500 ease-out z-10 group overflow-hidden outline-none",
+                    isActive ? "text-white" : "text-white/40 hover:text-white/80 hover:bg-white/[0.03]"
+                  )}>
+                    {/* Active Background Glow */}
+                    {isActive && (
+                      <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent rounded-xl flex items-center justify-center">
+                        <div className="absolute bottom-0 w-[40%] h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_-4px_10px_hsl(var(--primary)/50%)]" />
+                      </div>
+                    )}
+                    
+                    <Icon className={cn(
+                      "w-[22px] h-[22px] relative z-20 transition-transform duration-300",
+                      isActive ? "scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" : "group-hover:scale-105"
+                    )} />
+                    <span className={cn(
+                      "text-[13px] font-medium tracking-wide relative z-20 transition-all duration-300",
+                      isActive ? "opacity-100" : "hidden sm:block sm:opacity-100"
+                    )}>
+                      {item.label}
+                    </span>
+                  </a>
+                </Link>
+              );
+            })}
+          </nav>
         </div>
       </div>
-    </SidebarProvider>
+    </div>
   );
 }

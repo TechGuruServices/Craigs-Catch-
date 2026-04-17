@@ -1,5 +1,4 @@
 import { MonitorForm } from "@/components/monitor-form";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -13,7 +12,7 @@ import { useDeleteMonitor, useMonitors } from "@/hooks/use-monitors";
 import { useToast } from "@/hooks/use-toast";
 import { type MonitorResponse } from "@shared/schema";
 import { format } from "date-fns";
-import { Edit2, Plus, RadioReceiver, Settings2, Trash2 } from "lucide-react";
+import { Edit2, Plus, RadioReceiver, Clock, Trash2, Circle, Pause } from "lucide-react";
 import { useState } from "react";
 
 export default function Monitors() {
@@ -45,28 +44,40 @@ export default function Monitors() {
   };
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-700 pb-12 w-full">
+    <div className="space-y-8 animate-fade-in pb-12 w-full">
+
+      {/* ━━━ Page Header ━━━ */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative">
-        <div className="relative z-10">
-          <h1 className="text-4xl font-display font-extrabold tracking-tight text-gradient-sapphire animate-gradient-flow bg-300%">
+        <div className="relative z-10 space-y-2">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gradient-sapphire">
             Active Monitors
           </h1>
-          <p className="text-muted-foreground mt-2 text-lg font-medium">Manage your Craigslist RSS feeds to scrape for free stuff.</p>
+          <p className="text-muted-foreground text-base sm:text-lg font-medium">
+            Manage your Craigslist RSS feeds to scrape for free stuff.
+          </p>
         </div>
 
-        <Button
+        <button
           onClick={handleCreate}
-          className="glass-card-premium text-primary-foreground shadow-[0_0_20px_hsl(var(--primary)/0.4)] rounded-xl px-7 py-6 h-auto hover-lift active-press transition-all duration-300 z-10 animate-gradient-flow"
+          className="group flex items-center gap-2.5 px-6 py-3 rounded-xl font-semibold text-[14px] z-10 transition-all duration-300 active-press border border-primary/25 text-primary hover:shadow-[0_0_24px_hsl(172_80%_52%/0.15)]"
+          style={{ background: 'linear-gradient(135deg, hsl(172 80% 52% / 0.1) 0%, hsl(260 60% 62% / 0.06) 100%)' }}
         >
-          <Plus className="w-5 h-5 mr-2" />
-          <span className="font-bold text-base tracking-wide">Add Monitor</span>
-        </Button>
+          <Plus className="w-4.5 h-4.5 transition-transform duration-300 group-hover:rotate-90" />
+          Add Monitor
+        </button>
       </div>
 
+      {/* ━━━ Dialog ━━━ */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[500px] rounded-3xl border-white/10 glass-ultra shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+        <DialogContent
+          className="sm:max-w-[500px] rounded-2xl border border-white/[0.06] shadow-[0_32px_100px_rgba(0,0,0,0.5)]"
+          style={{
+            background: 'linear-gradient(180deg, hsl(225 12% 7%) 0%, hsl(225 12% 5%) 100%)',
+            backdropFilter: 'blur(40px)',
+          }}
+        >
           <DialogHeader className="mb-4">
-            <DialogTitle className="text-2xl font-display font-bold text-gradient-sapphire">
+            <DialogTitle className="text-xl font-bold text-gradient-sapphire">
               {editingMonitor ? "Edit Monitor" : "Create Monitor"}
             </DialogTitle>
           </DialogHeader>
@@ -78,100 +89,144 @@ export default function Monitors() {
         </DialogContent>
       </Dialog>
 
+      {/* ━━━ Content ━━━ */}
+
       {isLoading ? (
-        <div className="space-y-5">
+        <div className="space-y-4">
           {[1, 2, 3].map(i => (
-            <Card key={i} className="p-6 glass-card-premium border-white/5 animate-pulse">
+            <Card key={i} className="p-6 glass-card-premium border-white/[0.04] animate-pulse">
               <div className="flex gap-5 items-center">
-                <Skeleton className="w-14 h-14 rounded-full glass-card-subtle" />
+                <Skeleton className="w-12 h-12 rounded-xl" />
                 <div className="space-y-3 flex-1">
-                  <Skeleton className="h-7 w-1/4 rounded-lg glass-card-subtle" />
-                  <Skeleton className="h-5 w-1/2 rounded-md glass-card-subtle" />
+                  <Skeleton className="h-6 w-1/4 rounded-lg" />
+                  <Skeleton className="h-4 w-1/2 rounded" />
                 </div>
               </div>
             </Card>
           ))}
         </div>
       ) : monitors?.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-32 text-center glass-panel rounded-[2rem]">
-          <div className="glass-card-premium p-7 rounded-full mb-8 text-primary shadow-[0_0_40px_hsl(var(--primary)/0.15)] ring-1 ring-primary/20 hover-lift">
-            <RadioReceiver className="w-14 h-14" />
+        /* Empty state */
+        <div 
+          className="flex flex-col items-center justify-center py-28 text-center rounded-3xl border border-white/[0.04]"
+          style={{ background: 'linear-gradient(180deg, hsl(225 12% 6% / 0.5) 0%, hsl(225 12% 4% / 0.3) 100%)' }}
+        >
+          <div className="relative p-6 rounded-2xl mb-8 border border-primary/15"
+            style={{ background: 'hsl(172 80% 52% / 0.06)' }}
+          >
+            <RadioReceiver className="w-12 h-12 text-primary" />
+            <div className="absolute inset-0 rounded-2xl animate-pulse-glow" />
           </div>
-          <h2 className="text-3xl font-display font-bold mb-3 text-gradient-sapphire">No monitors yet</h2>
-          <p className="text-muted-foreground text-lg max-w-md mb-10 font-medium">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 text-gradient-sapphire">No monitors yet</h2>
+          <p className="text-muted-foreground text-base max-w-md mb-10 font-medium leading-relaxed">
             Create your first monitor by providing a Craigslist RSS search URL. We'll automatically fetch new items as they appear.
           </p>
-          <Button
+          <button
             onClick={handleCreate}
-            size="lg"
-            className="glass-card-premium text-primary-foreground shadow-[0_0_20px_hsl(var(--primary)/0.4)] rounded-xl px-8 py-6 h-auto hover-lift active-press transition-all duration-300 animate-gradient-flow"
+            className="flex items-center gap-2.5 px-7 py-3.5 rounded-xl font-semibold text-[15px] transition-all duration-300 active-press border border-primary/25 text-primary hover:shadow-[0_0_24px_hsl(172_80%_52%/0.15)]"
+            style={{ background: 'linear-gradient(135deg, hsl(172 80% 52% / 0.1) 0%, hsl(260 60% 62% / 0.06) 100%)' }}
           >
-            <Plus className="w-5 h-5 mr-3" />
-            <span className="font-bold text-lg tracking-wide">Create First Monitor</span>
-          </Button>
+            <Plus className="w-5 h-5" />
+            Create First Monitor
+          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        /* Monitor cards grid */
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {monitors?.map((monitor) => (
-            <Card
+            <div
               key={monitor.id}
-              className={`p-7 transition-all duration-500 hover-lift relative overflow-hidden group ${
+              className={`group relative rounded-2xl border overflow-hidden transition-all duration-400 ease-out hover:shadow-[0_16px_48px_rgba(0,0,0,0.25)] ${
                 monitor.active
-                  ? "glass-card-premium border-l-4 border-l-primary hover:border-l-primary hover:shadow-[0_0_30px_hsl(var(--primary)/0.1)]"
-                  : "glass-card-subtle border-l-4 border-l-muted-foreground/30 opacity-70 hover:opacity-100"
+                  ? "border-white/[0.06] hover:border-white/[0.1]"
+                  : "border-white/[0.03] opacity-60 hover:opacity-90"
               }`}
+              style={{
+                background: monitor.active
+                  ? 'linear-gradient(165deg, hsl(225 12% 7%) 0%, hsl(225 12% 5.5%) 100%)'
+                  : 'linear-gradient(165deg, hsl(225 10% 6%) 0%, hsl(225 10% 4.5%) 100%)',
+              }}
             >
+              {/* Active left accent stripe */}
+              <div className={`absolute left-0 top-0 bottom-0 w-[3px] rounded-r-full transition-colors duration-500 ${
+                monitor.active
+                  ? "bg-primary shadow-[2px_0_8px_hsl(172_80%_52%/0.3)]"
+                  : "bg-white/10"
+              }`} />
+
+              {/* Hover ambient glow */}
               {monitor.active && (
-                <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-[50px] pointer-events-none group-hover:bg-primary/15 transition-colors duration-500" />
+                <div className="absolute -top-20 -right-20 w-44 h-44 rounded-full blur-[60px] pointer-events-none transition-opacity duration-700 opacity-0 group-hover:opacity-100"
+                  style={{ background: 'hsl(172 80% 52% / 0.06)' }}
+                />
               )}
 
-              <div className="flex items-start justify-between gap-5 relative z-10">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-4 mb-3">
-                    <h3 className="text-2xl font-bold font-display text-foreground truncate group-hover:text-gradient-primary transition-colors">
+              <div className="p-6 pl-7 flex items-start justify-between gap-5 relative z-10">
+                <div className="flex-1 min-w-0 space-y-4">
+                  {/* Title row */}
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-xl font-bold text-foreground truncate group-hover:text-primary transition-colors duration-300">
                       {monitor.name}
                     </h3>
-                    <Badge variant={monitor.active ? "default" : "secondary"} className={`uppercase tracking-widest text-[10px] ${monitor.active ? "glass-card-subtle text-gradient-primary border border-primary/20 shadow-[0_0_10px_hsl(var(--primary)/0.1)] px-3 py-1 animate-shimmer" : "px-3 py-1 glass-card-subtle text-muted-foreground"}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-[0.1em] border ${
+                      monitor.active
+                        ? "text-primary/80 border-primary/15"
+                        : "text-muted-foreground/60 border-white/[0.06]"
+                    }`}
+                      style={{
+                        background: monitor.active
+                          ? 'hsl(172 80% 52% / 0.06)'
+                          : 'hsl(225 10% 11%)'
+                      }}
+                    >
+                      {monitor.active ? (
+                        <Circle className="w-2 h-2 fill-primary text-primary" />
+                      ) : (
+                        <Pause className="w-2.5 h-2.5" />
+                      )}
                       {monitor.active ? "Active" : "Paused"}
-                    </Badge>
+                    </span>
                   </div>
 
-                  <p className="text-sm text-foreground/70 font-mono truncate glass-card-subtle p-3 rounded-lg border border-white/5 mb-6 inline-block max-w-full shadow-inner">
+                  {/* URL display */}
+                  <p className="text-[13px] text-foreground/50 font-mono truncate px-3 py-2.5 rounded-lg border border-white/[0.04] max-w-full"
+                    style={{ background: 'hsl(225 12% 5%)' }}
+                  >
                     {monitor.url}
                   </p>
 
-                  <div className="flex items-center gap-2.5 text-xs text-muted-foreground font-semibold tracking-wide">
-                    <Settings2 className="w-4 h-4 text-primary/70" />
+                  {/* Last check info */}
+                  <div className="flex items-center gap-2 text-[11px] text-muted-foreground/60 font-semibold tracking-wide uppercase">
+                    <Clock className="w-3.5 h-3.5" />
                     <span>
-                      LAST CHECK: {monitor.lastChecked
+                      Last Check: {monitor.lastChecked
                         ? format(new Date(monitor.lastChecked), "MMM d, yyyy h:mm a")
-                        : "NEVER"}
+                        : "Never"}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-x-2 group-hover:translate-x-0">
-                  <Button
-                    variant="outline"
-                    size="sm"
+                {/* Action buttons */}
+                <div className="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-1 group-hover:translate-x-0">
+                  <button
                     onClick={() => handleEdit(monitor)}
-                    className="glass-card-subtle hover:border-primary hover:text-primary hover:bg-primary/10 transition-colors border-white/10 shadow-sm rounded-lg hover-lift active-press"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium text-muted-foreground border border-white/[0.06] hover:border-primary/30 hover:text-primary hover:bg-primary/[0.05] transition-all duration-200 active-press"
+                    style={{ background: 'hsl(225 12% 8%)' }}
                   >
-                    <Edit2 className="w-4 h-4 mr-2" />
+                    <Edit2 className="w-3.5 h-3.5" />
                     Edit
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
+                  </button>
+                  <button
                     onClick={() => handleDelete(monitor.id)}
-                    className="glass-card-subtle hover:border-destructive hover:text-destructive hover:bg-destructive/10 transition-colors border-white/10 shadow-sm rounded-lg hover-lift active-press"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium text-muted-foreground border border-white/[0.06] hover:border-destructive/30 hover:text-destructive hover:bg-destructive/[0.05] transition-all duration-200 active-press"
+                    style={{ background: 'hsl(225 12% 8%)' }}
                   >
-                    <Trash2 className="w-4 h-4 mr-2" />
+                    <Trash2 className="w-3.5 h-3.5" />
                     Delete
-                  </Button>
+                  </button>
                 </div>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       )}

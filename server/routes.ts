@@ -339,6 +339,7 @@ async function checkFeeds() {
             title: item.title || "No Title",
             link: item.link || "",
             description: item.contentSnippet || item.content || "",
+            imageUrl: images.length > 0 ? images[0] : undefined,
             postedAt: item.pubDate ? new Date(item.pubDate).toISOString() : new Date().toISOString(),
             guid: guid,
           });

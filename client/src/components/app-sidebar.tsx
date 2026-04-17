@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useTriggerCheck } from "@/hooks/use-jobs";
 import { useToast } from "@/hooks/use-toast";
-import { LayoutDashboard, MessageSquare, RadioReceiver, RefreshCw } from "lucide-react";
+import { LayoutDashboard, MessageSquare, RadioReceiver, Zap } from "lucide-react";
 import { Link, useLocation } from "wouter";
 
 export function AppSidebar() {
@@ -44,25 +44,32 @@ export function AppSidebar() {
   ];
 
   return (
-    <Sidebar className="border-r border-white/10 glass-ultra shadow-2xl shadow-black/40 z-40 overflow-hidden">
+    <Sidebar className="border-r border-white/[0.04] z-40 overflow-hidden shadow-[32px_0_100px_rgba(0,0,0,0.5)]"
+      style={{
+        background: 'linear-gradient(135deg, hsl(225 15% 4% / 0.9) 0%, hsl(225 15% 3% / 0.95) 100%)',
+        backdropFilter: 'blur(30px)'
+      }}
+    >
       <SidebarContent>
-        <div className="px-6 pt-8 pb-6 border-b border-white/10">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-[1.75rem] glass-card-premium text-primary shadow-[0_0_20px_hsl(var(--primary)/0.14)] hover-lift">
-              <RadioReceiver className="h-6 w-6" />
+        {/* Brand Header */}
+        <div className="px-6 pt-8 pb-6 relative">
+          <div className="absolute top-0 left-0 right-0 h-[100px] bg-gradient-to-b from-primary/10 to-transparent opacity-30 pointer-events-none" />
+          
+          <div className="flex items-center gap-3 relative z-10">
+            <div className="flex h-10 w-10 items-center justify-center rounded-[0.85rem] text-white shadow-[0_4px_16px_hsl(172_80%_52%/0.2)] border border-primary/20 hover-lift"
+              style={{ background: 'linear-gradient(135deg, hsl(172 80% 52%) 0%, hsl(190 90% 55%) 50%, hsl(260 60% 62%) 100%)' }}
+            >
+              <Zap className="h-5 w-5 drop-shadow-sm" />
             </div>
-            <span className="rounded-full glass-card-premium px-3 py-1 text-[11px] uppercase tracking-[0.36em] text-gradient-primary animate-shimmer">
-              Live
-            </span>
-          </div>
-          <div className="mt-4">
-            <p className="text-sm font-semibold text-foreground text-gradient-sapphire">Smart Feeds</p>
-            <p className="mt-1 text-xs leading-5 text-muted-foreground/80">Fast, premium scanning and notifications.</p>
+            <div>
+              <h2 className="text-base font-bold text-gradient-sapphire tracking-tight leading-tight">CraigsCatch</h2>
+              <p className="text-[11px] font-semibold text-muted-foreground/60 tracking-wider uppercase mt-0.5">Automated Feeds</p>
+            </div>
           </div>
         </div>
 
-        <SidebarGroup className="py-6">
-          <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 mb-5 px-6">
+        <SidebarGroup className="py-2">
+          <SidebarGroupLabel className="text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/40 mb-3 px-6">
             Navigation
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -74,15 +81,23 @@ export function AppSidebar() {
                     <SidebarMenuButton
                       asChild
                       data-active={isActive}
-                      className={`transition-all duration-300 rounded-3xl mb-2 hover-lift active-press ${
+                      className={`relative overflow-hidden transition-all duration-300 rounded-xl mb-1.5 hover-lift active-press group ${
                         isActive
-                          ? "glass-card-premium text-primary font-semibold shadow-[0_0_16px_hsl(var(--primary)/0.18)] border border-primary/20 animate-pulse-glow"
-                          : "glass-card-subtle text-muted-foreground border border-transparent hover:shadow-[0_0_15px_rgba(255,255,255,0.08)] hover:text-foreground"
+                          ? "text-primary font-bold shadow-[0_4px_12px_hsl(172_80%_52%/0.08)] border border-primary/10"
+                          : "text-muted-foreground border border-transparent hover:text-foreground"
                       }`}
+                      style={{
+                        background: isActive 
+                          ? 'linear-gradient(90deg, hsl(172 80% 52% / 0.1) 0%, hsl(172 80% 52% / 0.05) 100%)' 
+                          : 'transparent'
+                      }}
                     >
-                      <Link href={item.url} className="flex items-center gap-4 px-4 py-3">
-                        <item.icon className="h-4 w-4" />
-                        <span className="text-sm">{item.title}</span>
+                      <Link href={item.url} className="flex items-center gap-4 px-4 py-2.5 outline-none relative z-10">
+                        {isActive && (
+                          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-3/5 bg-primary rounded-r-full shadow-[2px_0_8px_hsl(var(--primary)/0.4)]" />
+                        )}
+                        <item.icon className={`h-4 w-4 transition-transform duration-300 ${isActive ? 'scale-110 drop-shadow-[0_0_8px_hsl(172_80%_52%/0.4)]' : 'group-hover:scale-110'}`} />
+                        <span className="text-[13px] tracking-wide">{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -93,28 +108,40 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-6 border-t border-white/10 glass-card-premium">
+      <SidebarFooter className="p-5 border-t border-white/[0.04] relative">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent opacity-20 pointer-events-none" />
+        
         <button
           onClick={handleTrigger}
           disabled={isPending}
-          className="w-full flex items-center justify-center gap-2.5 px-4 py-3.5 rounded-3xl font-semibold text-primary-foreground bg-gradient-to-br from-primary to-accent shadow-lg shadow-primary/20 hover:shadow-primary/40 hover-lift active-press disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-300 animate-gradient-flow"
+          className="w-full relative overflow-hidden group flex items-center justify-center gap-2.5 px-4 py-3 rounded-xl font-bold text-white shadow-[0_8px_20px_hsl(172_80%_52%/0.2)] hover:shadow-[0_12px_28px_hsl(172_80%_52%/0.3)] active-press disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-300 border border-white/10"
+          style={{ background: 'linear-gradient(135deg, hsl(172 80% 52%) 0%, hsl(260 60% 62%) 100%)' }}
         >
-          <RefreshCw className={`h-4 w-4 ${isPending ? 'animate-spin' : ''}`} />
-          {isPending ? 'Syncing Feeds...' : 'Force Sync Now'}
+          {/* Button shine effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[150%] skew-x-[-30deg] group-hover:translate-x-[150%] transition-transform duration-700 ease-out" />
+          
+          <RefreshCw className={`h-4 w-4 relative z-10 ${isPending ? 'animate-spin' : ''}`} />
+          <span className="relative z-10 text-[13px] tracking-wide">
+            {isPending ? 'Syncing Feeds...' : 'Force Sync Now'}
+          </span>
         </button>
-        <div className="mt-5 flex items-center justify-between gap-2 text-[11px] font-medium text-muted-foreground uppercase tracking-widest">
+
+        <div className="mt-4 flex items-center justify-between px-1 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.14em]">
           <div className="flex items-center gap-2">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary animate-pulse-glow"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
             </span>
             <span>System Online</span>
           </div>
-          <span className="rounded-full glass-card-premium px-2 py-1 text-[10px] uppercase tracking-[0.35em] text-muted-foreground/80">
-            Sync Ready
+          <span className="px-2 py-0.5 rounded-md border border-white/[0.04]" style={{ background: 'hsl(225 12% 8%)' }}>
+            Ready
           </span>
         </div>
       </SidebarFooter>
     </Sidebar>
   );
 }
+
+// Ensure RefreshCw is available
+import { RefreshCw } from "lucide-react";

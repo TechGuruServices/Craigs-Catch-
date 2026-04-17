@@ -26,7 +26,7 @@ export const items = sqliteTable("items", {
   description: text("description"),
   imageUrl: text("image_url"),
   postedAt: text("posted_at"),
-  guid: text("guid").notNull().unique(), // The RSS item guid to prevent duplicates
+  guid: text("guid").notNull().unique(), // The RSS item guide to prevent duplicates
   createdAt: text("created_at").default("CURRENT_TIMESTAMP").notNull(),
 });
 

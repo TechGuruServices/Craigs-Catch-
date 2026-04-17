@@ -83,7 +83,7 @@ export async function registerRoutes(
 
   app.post(api.ai.chat.path, async (req: Request, res: Response) => {
     try {
-      const { message } = api.ai.chat.input.parse(req.body);
+      const { message, model: clientModel } = api.ai.chat.input.parse(req.body);
 
       // Save user message
       await storage.createMessage({
@@ -93,18 +93,13 @@ export async function registerRoutes(
 
       let aiContent = "";
       try {
-        const groqApiKey = process.env.GROQ_API_KEY;
-        const model = process.env.MODEL_NAME || "llama3-8b-8192";
+        const ollamaUrl = process.env.OLLAMA_URL || "http://127.0.0.1:11434/api/chat";
+        const model = clientModel || process.env.OLLAMA_MODEL || "llama3";
 
-        if (!groqApiKey) {
-          throw new Error("GROQ_API_KEY is not set in environment variables.");
-        }
-
-        const groqResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        const ollamaResponse = await fetch(ollamaUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${groqApiKey}`,
           },
           body: JSON.stringify({
             model,
@@ -115,20 +110,19 @@ export async function registerRoutes(
               },
               { role: "user", content: message },
             ],
-            temperature: 0.7,
-            max_tokens: 512,
+            stream: false,
           }),
         });
 
-        if (groqResponse.ok) {
-          const data = await groqResponse.json() as { choices: { message: { content: string } }[] };
-          aiContent = data.choices?.[0]?.message?.content || "No response received.";
+        if (ollamaResponse.ok) {
+          const data = await ollamaResponse.json() as { message: { content: string } };
+          aiContent = data?.message?.content || "No response received.";
         } else {
-          const errText = await groqResponse.text();
-          throw new Error(`Groq API error ${groqResponse.status}: ${errText}`);
+          const errText = await ollamaResponse.text();
+          throw new Error(`Ollama API error ${ollamaResponse.status}: ${errText}`);
         }
       } catch (error) {
-        console.error("Groq AI error:", error);
+        console.error("Ollama AI error:", error);
         aiContent = `⚠️ AI Error: ${error instanceof Error ? error.message : String(error)}`;
       }
 
@@ -145,6 +139,33 @@ export async function registerRoutes(
         return res.status(400).json({ message: err.errors[0].message });
       }
       res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Fetch Available Models
+  app.get(api.ai.models.path, async (_req: Request, res: Response) => {
+    try {
+      const chatUrl = process.env.OLLAMA_URL || "http://127.0.0.1:11434/api/chat";
+      // Convert /api/chat to /api/tags
+      const tagsUrl = chatUrl.replace('/api/chat', '/api/tags');
+      const response = await fetch(tagsUrl);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch models from Ollama: ${response.status}`);
+      }
+      
+      const data = await response.json() as { models: Array<{ name: string }> };
+      const modelNames = data.models.map(m => m.name);
+      
+      // Provide some fallback defaults if empty
+      if (modelNames.length === 0) {
+        modelNames.push("llama3", "qwen", "mistral");
+      }
+      res.json(modelNames);
+    } catch (err: any) {
+      console.error("Failed to list Ollama models:", err);
+      // Return defaults if Ollama is unreachable
+      res.json([process.env.OLLAMA_MODEL || "llama3"]);
     }
   });
 

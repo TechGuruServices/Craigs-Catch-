@@ -1,0 +1,7 @@
+fastapi==0.112.0
+uvicorn[standard]==0.30.0
+pydantic==2.8
+# Only needed if you run vLLM
+vllm==0.5.0
+# Optional – for nicer logging
+loguru==0.7.2

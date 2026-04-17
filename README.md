@@ -15,7 +15,7 @@
 
 - 🚀 **Real-Time Background Monitoring** — An automated background polling engine that fetches the latest listings based on your customizable intervals.
 - 📸 **Smart Image Extraction** — Automatically navigates through listings to scrape and attach full-resolution Craigslist pictures straight to your dashboard and Telegram alerts.
-- 💬 **CraigsCatch AI (Powered by Groq)** — Ask questions about your recent finds, evaluate deals, and get intelligent summaries using ultra-fast LLaMA 3 or other leading LLM models.
+- 💬 **CraigsCatch AI (Powered by Ollama)** — Ask questions about your recent finds, evaluate deals, and get intelligent summaries locally using fast models like Llama 3 or Qwen.
 - 📱 **PWA "Glassmorphic" Interface** — A meticulously crafted, mobile-first design system featuring deep gradients, smooth framer-motion micro-animations, layout transitions, and an app-like bottom navigation dock.
 - 📨 **Rich-Media Telegram Alerts** — Instant push notifications delivering photo carousels and direct links for newly discovered listings straight to your devices.
 - 🗄️ **Embedded Local Storage** — Lightning-fast, zero-config SQLite persistence leveraging Drizzle ORM.
@@ -32,7 +32,7 @@ Built with a modern, high-performance toolchain focusing on developer experience
 | **Design System** | Tailwind CSS, Framer Motion, shadcn/ui |
 | **Backend Service** | Node.js, Express |
 | **Database & ORM** | SQLite (`better-sqlite3`), Drizzle ORM |
-| **AI Inference** | Groq API (LLaMA 3) |
+| **AI Inference** | Ollama (Local LLM) |
 | **Integrations** | Telegram Bot API (Rich Media / Albums) |
 
 ---
@@ -42,7 +42,7 @@ Built with a modern, high-performance toolchain focusing on developer experience
 ### Prerequisites
 - **Node.js 20+**
 - (Optional) **Telegram Bot Token** and Chat ID (for receiving alerts)
-- (Optional) **Groq API Key** (for CraigsCatch AI chat features)
+- (Optional) **Ollama** installed on your system (for CraigsCatch AI chat features)
 
 ### 1️⃣ Installation
 
@@ -71,9 +71,9 @@ CHECK_INTERVAL_MINUTES=10
 # Database
 DATABASE_URL=./local.db
 
-# AI Chat (Groq API)
-GROQ_API_KEY=your_groq_api_key_here
-MODEL_NAME=llama3-8b-8192
+# AI Chat (Local Ollama)
+OLLAMA_URL=http://localhost:11434/api/chat
+OLLAMA_MODEL=llama3
 
 # Telegram Alerts (See Setup Guide Below)
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
@@ -118,13 +118,13 @@ CraigsCatch supports beautiful HTML-formatted messages alongside multi-image car
 
 ---
 
-## 🧠 CraigsCatch AI (Groq Setup)
-Experience lightning-fast query evaluations against your scraped listings.
+## 🧠 CraigsCatch AI (Ollama Setup)
+Experience completely private, cost-free AI evaluations against your scraped listings.
 
-1. Create a free account at [Groq Cloud](https://console.groq.com/).
-2. Navigate to **API Keys** and generate a new key.
-3. Add the key to your `.env` as `GROQ_API_KEY`.
-4. *(Optional)* Select a specific model by setting `MODEL_NAME` (default is `llama3-8b-8192`). 
+1. Download and install [Ollama](https://ollama.ai/) for your operating system.
+2. Open your terminal and pull a model of your choice: `ollama run llama3` (or `qwen`, `mistral`, etc.)
+3. Ensure your `.env` contains the correct endpoint: `OLLAMA_URL=http://localhost:11434/api/chat`
+4. *(Optional)* Select a specific model by setting `OLLAMA_MODEL` (default is `llama3`). 
 5. Start chatting instantly in the **Ask AI** tab inside the dashboard.
 
 ---

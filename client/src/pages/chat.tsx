@@ -12,8 +12,20 @@ import { useEffect, useRef, useState } from "react";
 
 export default function Chat() {
   const [input, setInput] = useState("");
+  const [selectedModel, setSelectedModel] = useState<string>("llama3");
   const { toast } = useToast();
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const { data: models } = useQuery<string[]>({
+    queryKey: [api.ai.models.path],
+  });
+
+  // Automatically select the first model if available and default is not in the list
+  useEffect(() => {
+    if (models && models.length > 0 && !models.includes(selectedModel)) {
+      setSelectedModel(models[0]);
+    }
+  }, [models]);
 
   const { data: messages, isLoading } = useQuery<Message[]>({
     queryKey: [api.ai.messages.path],
@@ -21,7 +33,7 @@ export default function Chat() {
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
-      const res = await apiRequest("POST", api.ai.chat.path, { message });
+      const res = await apiRequest("POST", api.ai.chat.path, { message, model: selectedModel });
       return res.json();
     },
     onSuccess: () => {
@@ -90,6 +102,29 @@ export default function Chat() {
               <span className="font-bold text-lg tracking-wide text-foreground">CraigsCatch Assistant</span>
               <p className="text-[11px] text-muted-foreground/60 font-semibold uppercase tracking-wider">Online</p>
             </div>
+            
+            {models && models.length > 0 && (
+              <div className="ml-auto relative">
+                <select
+                  aria-label="Select AI Model"
+                  title="Select AI Model"
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  className="appearance-none bg-black/40 border border-white/10 text-white text-xs font-medium py-1.5 pl-3 pr-8 rounded-lg cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all shadow-sm hover:border-white/20"
+                >
+                  {models.map((modelName) => (
+                    <option key={modelName} value={modelName} className="bg-zinc-900 text-white">
+                      {modelName}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white/50">
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                  </svg>
+                </div>
+              </div>
+            )}
           </CardTitle>
         </CardHeader>
 

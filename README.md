@@ -1,174 +1,159 @@
-# CraigsCatch — Craigslist Free Item Scanner
+<div align="center">
 
-A self-hosted web app (PWA) that monitors Craigslist search results for free items and sends real-time Telegram alerts.
+# 🌌 CraigsCatch
+<h3>The Ultimate Craigslist Deal & Freebie Scanner</h3>
 
-## Features
+*A high-performance, self-hosted web application that monitors Craigslist search results for free items, extracts images, and sends real-time rich-media Telegram alerts.*
 
-- 🔍 **Craigslist monitoring** — Track Craigslist search results automatically
-- 📨 **Telegram alerts** — Instant notifications for new free items
-- 🤖 **AI assistant** — Optional Ollama-powered chat for summaries and insights
-- 📱 **PWA experience** — Installable on desktop and mobile
-- 🗄️ **Local storage** — SQLite persistence via Drizzle ORM
+[Features](#-premium-features) • [Tech Stack](#-tech-stack) • [Quick Start](#-quick-start) • [Telegram Setup](#-telegram-alerts-setup) • [AI Configuration](#-craigscatch-ai) • [Troubleshooting](#-troubleshooting)
+
+</div>
 
 ---
 
-## Local Development
+## ✨ Premium Features
+
+- 🚀 **Real-Time Background Monitoring** — An automated background polling engine that fetches the latest listings based on your customizable intervals.
+- 📸 **Smart Image Extraction** — Automatically navigates through listings to scrape and attach full-resolution Craigslist pictures straight to your dashboard and Telegram alerts.
+- 💬 **CraigsCatch AI (Powered by Groq)** — Ask questions about your recent finds, evaluate deals, and get intelligent summaries using ultra-fast LLaMA 3 or other leading LLM models.
+- 📱 **PWA "Glassmorphic" Interface** — A meticulously crafted, mobile-first design system featuring deep gradients, smooth framer-motion micro-animations, layout transitions, and an app-like bottom navigation dock.
+- 📨 **Rich-Media Telegram Alerts** — Instant push notifications delivering photo carousels and direct links for newly discovered listings straight to your devices.
+- 🗄️ **Embedded Local Storage** — Lightning-fast, zero-config SQLite persistence leveraging Drizzle ORM.
+
+---
+
+## 🛠️ Tech Stack
+
+Built with a modern, high-performance toolchain focusing on developer experience and pure speed:
+
+| Category | Technology |
+| :--- | :--- |
+| **Frontend Framework** | React 18, Vite |
+| **Design System** | Tailwind CSS, Framer Motion, shadcn/ui |
+| **Backend Service** | Node.js, Express |
+| **Database & ORM** | SQLite (`better-sqlite3`), Drizzle ORM |
+| **AI Inference** | Groq API (LLaMA 3) |
+| **Integrations** | Telegram Bot API (Rich Media / Albums) |
+
+---
+
+## ⚡ Quick Start
 
 ### Prerequisites
+- **Node.js 20+**
+- (Optional) **Telegram Bot Token** and Chat ID (for receiving alerts)
+- (Optional) **Groq API Key** (for CraigsCatch AI chat features)
 
-- Node.js 20+
-- (Optional) [Ollama](https://ollama.ai) for the AI chat feature
-- (Optional) Telegram bot token and chat ID for notifications
+### 1️⃣ Installation
 
-### Setup
+Clone the repository and install the heavily optimized dependency tree:
 
-1. **Clone the repo**
+```bash
+git clone https://github.com/TechGuruServices/Craigs-Catch-.git
+cd Craigs-Catch-
+npm install
+```
 
-   ```bash
-   git clone https://github.com/TechGuruServices/daylume-main.git
-   cd Craigslist-Item-Scanner-main
-   ```
+### 2️⃣ Environment Configuration
 
-2. **Install dependencies**
+Create a local environment file and fill in your details.
 
-   ```bash
-   npm install
-   ```
+```bash
+cp .env.example .env
+```
 
-3. **Copy the example environment file**
+**Essential Variables:**
+```env
+# Server
+PORT=5000
+CHECK_INTERVAL_MINUTES=10
 
-   ```bash
-   cp .env.example .env
-   ```
+# Database
+DATABASE_URL=./local.db
 
-4. **Edit `.env`**
-   - `DATABASE_URL=./local.db`
-   - `PORT=5000` (or another port if needed)
-   - `CHECK_INTERVAL_MINUTES=10`
-   - `OLLAMA_URL` and `OLLAMA_MODEL` if using AI chat
-   - `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` if using alerts
+# AI Chat (Groq API)
+GROQ_API_KEY=your_groq_api_key_here
+MODEL_NAME=llama3-8b-8192
 
-5. **Push the database schema**
+# Telegram Alerts (See Setup Guide Below)
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
+TELEGRAM_CHAT_ID=-100xxxxxxxxxx
+```
 
-   ```bash
-   npm run db:push
-   ```
+### 3️⃣ Initialize Database
+Push the schema to your local SQLite instance:
+```bash
+npm run db:push
+```
 
-6. **Start the app**
+### 4️⃣ Fire It Up
+Launch the full-stack environment using our custom development server runner:
+```bash
+npm run dev
+```
 
-   ```bash
-   npm run dev
-   ```
-
-7. **Open the app**
-   - [http://localhost:5000](http://localhost:5000)
-
----
-
-## Environment Variables
-
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `DATABASE_URL` | ✅ Yes | `./local.db` | SQLite database file path |
-| `PORT` | No | `5000` | Server port |
-| `CHECK_INTERVAL_MINUTES` | No | `15` | Poll interval in minutes |
-| `OLLAMA_URL` | No | `http://localhost:11434/api/generate` | Ollama API endpoint |
-| `OLLAMA_MODEL` | No | `qwen` | Ollama model name |
-| `TELEGRAM_BOT_TOKEN` | No | — | Telegram bot token from [@BotFather](https://t.me/botfather) |
-| `TELEGRAM_CHAT_ID` | No | — | Telegram chat or group ID for alerts |
-
-> Note: `.env` is excluded from git, so your secrets stay local.
+The premium dashboard will now be accessible at [http://localhost:5000](http://localhost:5000) 🚀
 
 ---
 
-## Telegram Alerts Setup
+## 📨 Telegram Alerts Setup
+CraigsCatch supports beautiful HTML-formatted messages alongside multi-image carousels.
 
-### 1. Create a Telegram bot
-
-1. Open Telegram and message [@BotFather](https://t.me/botfather)
-2. Send `/newbot`
-3. Follow the prompts and copy the bot token
-
-### 2. Get your Telegram chat ID
-
-- For private notifications, message [@userinfobot](https://t.me/userinfobot)
-- Use the returned user ID as `TELEGRAM_CHAT_ID`
-
-### 3. Use a Telegram group for both users
-
-1. Create a Telegram group or supergroup
-2. Add your friend to the group
-3. Add your bot to the group
-4. Make the bot an admin so it can post messages
-5. Send a message in the group to generate activity
-6. Retrieve the group chat ID with the Bot API:
-
+1. **Create the Bot:** Open Telegram and message [@BotFather](https://t.me/botfather). Send `/newbot`, follow the prompts, and copy the **Bot Token**.
+2. **Setup a Hub (Group):**
+   - Create a Telegram super-group and add your newly minted bot.
+   - Promote your bot to **Admin** (allowing it to post media to the chat).
+   - Send a generic test message into the group.
+3. **Capture the Chat ID:**
+   Run the following cURL command to intercept your group's Chat ID:
    ```bash
    curl -s "https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates" | grep -o '"id":[-0-9]\+' | head -1
    ```
-
-7. Set `TELEGRAM_CHAT_ID` to the group ID, like `-1001234567890`
-
-### 4. Test Telegram notifications
-
-- Use the built-in test route:
-
-  ```bash
-  curl -X POST http://localhost:5000/api/test-telegram
-  ```
-
-- Or trigger a manual feed check:
-
-  ```bash
-  curl -X POST http://localhost:5000/api/jobs/check
-  ```
+   > **Note:** Super-group IDs typically begin with `-100`.
+4. **Test the Pipeline:**
+   Trigger the pre-flight testing mechanism to ensure media routes are functioning correctly:
+   ```bash
+   curl -X POST http://localhost:5000/api/test-telegram
+   ```
 
 ---
 
-## Troubleshooting
+## 🧠 CraigsCatch AI (Groq Setup)
+Experience lightning-fast query evaluations against your scraped listings.
 
-- **No Telegram messages?**
-  - Confirm `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` are set correctly in `.env`.
-  - Make sure the bot is started in Telegram by sending it a message.
-  - If using a group, ensure the bot is added to the group and has permission to send messages.
-
-- **Bot returns 401 Unauthorized**
-  - The token is invalid or was copied incorrectly.
-  - Regenerate the token with [@BotFather](https://t.me/botfather) and update `.env`.
-
-- **Messages appear in private chat but not group**
-  - Check that the group ID begins with `-100` for a supergroup.
-  - Ensure the bot is a member and admin in the group.
-  - Use `getUpdates` only after sending a message in the group to populate the ID.
-
-- **App does not start / address in use**
-  - Change `PORT` in `.env` to an unused port (for example, `5001`).
-  - Restart the app after updating `.env`.
+1. Create a free account at [Groq Cloud](https://console.groq.com/).
+2. Navigate to **API Keys** and generate a new key.
+3. Add the key to your `.env` as `GROQ_API_KEY`.
+4. *(Optional)* Select a specific model by setting `MODEL_NAME` (default is `llama3-8b-8192`). 
+5. Start chatting instantly in the **Ask AI** tab inside the dashboard.
 
 ---
 
-## How It Works
+## 🛡️ Troubleshooting
 
-1. Add a Craigslist search URL from your target region
-2. The app polls the URL every `CHECK_INTERVAL_MINUTES`
-3. New items are parsed and deduplicated
-4. Alerts are sent to Telegram for each new listing
-5. The dashboard displays discovered items and monitors
+<details>
+<summary><strong>📱 No Telegram Notifications Arriving?</strong></summary>
+
+- Validate your `TELEGRAM_BOT_TOKEN` in `.env`.
+- Ensure the Chat ID starts with `-100` if you're broadcasting to a group.
+- Did you give your Bot **Admin Rights** in the group? It needs this to push images and run `sendMediaGroup`.
+</details>
+
+<details>
+<summary><strong>🏗️ Application Failing to Boot? (Address In Use)</strong></summary>
+
+- If you receive `EADDRINUSE`, the default port `5000` is tied up. Update your `PORT` variable inside `.env` to `5001` or another open port.
+</details>
+
+<details>
+<summary><strong>🖼️ Scraped Listings Missing Images?</strong></summary>
+
+- Craigslist sometimes blocks heavy scraping and automated bots. The engine attempts to bypass basic blocks using browser-mimicking user-agents, occasionally falling back if it's aggressively rate-limited by your local IP.
+</details>
 
 ---
 
-## Notes
-
-- The app currently uses **SQLite** for local storage.
-- If you want both you and a friend to receive alerts, use a **Telegram group** chat ID.
-- Do not commit your `.env` file or bot token to source control.
-
----
-
-## Tech Stack
-
-- **Frontend**: React, Vite, TailwindCSS, shadcn/ui
-- **Backend**: Express, Node.js
-- **Database**: SQLite + Drizzle ORM
-- **AI**: Optional Ollama integration
-- **Notifications**: Telegram Bot API
+<div align="center">
+  <p>Built with ❤️ by Tech Guru Services.</p>
+  <i>"Don't search for it; let the deals come to you."</i>
+</div>

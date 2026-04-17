@@ -185,6 +185,18 @@ export default function Dashboard() {
                         {item.title}
                       </h3>
 
+                      {/* Image */}
+                      {item.imageUrl && (
+                        <div className="relative w-full h-40 mb-4 rounded-xl overflow-hidden z-10 border border-white/[0.04] bg-muted/20">
+                          <img 
+                            src={item.imageUrl} 
+                            alt={item.title} 
+                            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+
                       {/* Description */}
                       <p className="text-muted-foreground/80 text-sm flex-grow line-clamp-3 mb-6 leading-relaxed relative z-10">
                         {descriptionText}

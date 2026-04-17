@@ -90,8 +90,22 @@ export function Layout({ children }: LayoutProps) {
 
         {/* ━━━ Scrollable Content ━━━ */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto w-full mx-auto max-w-[1400px] scrollbar-premium relative z-0">
-          <div className="p-4 sm:p-8 md:p-10 pb-32 sm:pb-32">
-            {children}
+          <div className="flex flex-col min-h-full p-4 sm:p-8 md:p-10 pb-32 sm:pb-32">
+            <div className="flex-1">
+              {children}
+            </div>
+
+            {/* ━━━ Premium Footer ━━━ */}
+            <footer className="mt-16 mb-4 flex justify-center items-center w-full pointer-events-none fade-in animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <div className="px-6 py-2.5 rounded-full border border-white/[0.04] bg-white/[0.02] backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.15)] flex items-center">
+                <p className="text-[10px] sm:text-xs font-bold tracking-[0.25em] text-muted-foreground/50 uppercase flex items-center gap-2.5">
+                  Powered by
+                  <span className="relative font-black tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-primary animate-gradient-flow bg-[length:200%_auto] drop-shadow-[0_0_8px_hsl(var(--primary)/0.6)]">
+                    TECHGURU
+                  </span>
+                </p>
+              </div>
+            </footer>
           </div>
         </main>
 
